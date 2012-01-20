@@ -1,5 +1,6 @@
 package paasat;
 
+import utils.FileLoader;
 import java.util.List;
 import paasat.algorithms.*;
 
@@ -17,14 +18,17 @@ public class Main {
     public static void main(String[] args) {
 
         // nacteme vstup
-        FileLoader fl = new FileLoader("uf20-01.txt");
-        List vstup = fl.loadFile();
+        String file = "small.txt";
+        FileLoader fl = new FileLoader();
+        List vstup = fl.loadFile(file);
+        byte[] vahy = fl.loadWeights(file + ".sol");
 
         // vytvorime formuli
-        Formula formula = new Formula(vstup);
+        Formula formula = new Formula(vstup, vahy, fl.getVariablesCount());
 
-        // vytvorime strategii reseni
+        // vytvorime strategii reseni a spustime
         itsStrategy = new BruteForce(formula);
+        itsStrategy.solve();
 
     }
 

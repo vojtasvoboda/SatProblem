@@ -1,6 +1,7 @@
 package paasat;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -8,6 +9,9 @@ import java.util.List;
  * @author Bc. Vojtěch Svoboda <svobovo3@fit.cvut.cz>
  */
 public class Formula {
+
+    /* pocet promennych */
+    private int promennychCount = 0;
 
     /* ArrayList skladajici se z Arrays (klauzuli) */
     private List klauzule = null;
@@ -22,10 +26,11 @@ public class Formula {
      * Konstruktor
      * @param vstup
      */
-    public Formula(List vstup) {
+    public Formula(List vstup, byte[] vahy, int pocetPromennych) {
         this.klauzule = vstup;
-        this.ohodnoceni = new boolean[vstup.size()];
-        this.vahy = new byte[vstup.size()];
+        this.ohodnoceni = new boolean[pocetPromennych];
+        this.vahy = vahy;
+        this.promennychCount = pocetPromennych;
     }
 
     /**
@@ -34,23 +39,11 @@ public class Formula {
      * @return boolean
      */
     public boolean isFormulaSatisfable() {
-        for (int i = 0; i < klauzule.size(); i++) {
-            if ( !isClauseSatisfable((byte[]) klauzule.get(i)))
-                return false;
+        Iterator it = klauzule.iterator();
+        while( it.hasNext() ) {
+            if ( !isClauseSatisfable((byte[]) it.next())) return false;
         }
         return true;
-    }
-
-    /**
-     * Vrati soucet vah promenych, ktere jsou nastavene na jednicku
-     * @return
-     */
-    public int getFormulaSum() {
-        int suma = 0;
-        for (int i = 0; i < ohodnoceni.length; i++) {
-            if ( ohodnoceni[i] ) suma += vahy[i];
-        }
-        return suma;
     }
 
     /**
@@ -65,27 +58,47 @@ public class Formula {
      * @return boolean
      */
     private boolean isClauseSatisfable(byte[] clause) {
-        byte bit;
+        byte item;
+        // System.out.print("Testuji klauzuli: "); Printer.printByteArray(clause);
         // projdeme vsechny prvky klauzule
         for (int i = 0; i < clause.length; i++) {
-            bit = clause[i];
+            item = clause[i];
             // pokud je promenna kladna a ohodnocena jako jednicka
-            if ( (bit > 0) && (this.ohodnoceni[bit]) ) {
+            if ( (item > 0) && (this.ohodnoceni[item - 1]) ) {
                 return true;
 
             // pokud je zaporny
-            } else if ( bit < 0 ){
-                bit = (byte) (bit - (2 * bit));
-                if ( !this.ohodnoceni[bit] ) return true;
+            } else if ( item < 0 ){
+                // znegujeme
+                item = (byte) (item - (2 * item));
+                // a ohodnocena jako nula
+                if ( !this.ohodnoceni[item - 1] ) return true;
             }
         }
+        // nenasli jsme svedka splnitelnosti
         return false;
+    }
+
+    /**
+     * Vrati soucet vah promenych, ktere jsou nastavene na jednicku
+     * @return
+     */
+    public int getFormulaSum() {
+        int suma = 0;
+        for (int i = 0; i < ohodnoceni.length; i++) {
+            if ( ohodnoceni[i] ) suma += vahy[i];
+        }
+        return suma;
     }
 
     //== GETTERS AND SETTERS ===================================================
 
     public void setOhodnoceni(boolean[] ohodnoceni) {
         this.ohodnoceni = ohodnoceni;
+    }
+
+    public boolean[] getOhodnoceni() {
+        return ohodnoceni;
     }
 
     public byte[] getVahy() {
@@ -96,6 +109,22 @@ public class Formula {
         this.vahy = weights;
     }
 
+    public int getPromennychCount() {
+        return promennychCount;
+    }
+
+    public void setPromennychCount(int promennychCount) {
+        this.promennychCount = promennychCount;
+    }
+
+    public int getClausuleCount() {
+        return this.klauzule.size();
+    }
+
+    public List getKlauzule() {
+        return klauzule;
+    }
+
     //== TESTY =================================================================
 
     /**
@@ -103,28 +132,28 @@ public class Formula {
      * @param args
      */
     public static void main(String[] args) {
-        Formula f = new Formula(new ArrayList());
+        Formula f = new Formula(new ArrayList(), new byte[4], 4);
 
         byte[] neco = {1,2,3,4};
-        boolean[] ohodnoceni = {false,false,false,false,false};
+        boolean[] ohodnoceni = {false,false,false,false};
         f.setOhodnoceni(ohodnoceni);
         boolean clauseSatisfable = f.isClauseSatisfable(neco);
         System.out.println("Ma byt false je " + clauseSatisfable);
 
         byte[] neco2 = {1,-2,3,4};
-        boolean[] ohodnoceni2 = {false,true,true,false,false};
+        boolean[] ohodnoceni2 = {false,true,true,false};
         f.setOhodnoceni(ohodnoceni2);
         clauseSatisfable = f.isClauseSatisfable(neco2);
         System.out.println("Ma byt true je " + clauseSatisfable);
 
         byte[] neco3 = {1,-2,3,4};
-        boolean[] ohodnoceni3 = {false,false,true,false,false};
+        boolean[] ohodnoceni3 = {false,true,false,false};
         f.setOhodnoceni(ohodnoceni3);
         clauseSatisfable = f.isClauseSatisfable(neco3);
         System.out.println("Ma byt false je " + clauseSatisfable);
 
         byte[] neco4 = {1,-2,3,4};
-        boolean[] ohodnoceni4 = {false,false,false,false,false};
+        boolean[] ohodnoceni4 = {false,false,false,false};
         f.setOhodnoceni(ohodnoceni4);
         clauseSatisfable = f.isClauseSatisfable(neco4);
         System.out.println("Ma byt true je " + clauseSatisfable);
