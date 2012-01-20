@@ -3,6 +3,7 @@ package paasat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import paasat.utils.Printer;
 
 /**
  * Trida, ktera implementuje jednu matematickou formuli
@@ -39,11 +40,26 @@ public class Formula {
      * @return boolean
      */
     public boolean isFormulaSatisfable() {
+        // System.out.println("Formula: isFormulaSatisfable(): pocet " + klauzule.size());
         Iterator it = klauzule.iterator();
         while( it.hasNext() ) {
             if ( !isClauseSatisfable((byte[]) it.next())) return false;
         }
         return true;
+    }
+
+    /**
+     * Vrati pocet splnitelnych klauzuli
+     * @return
+     */
+    public int getPocetSplnitelnychKlauzuli() {
+        int pocetSplnitelnych = 0;
+        Iterator it = klauzule.iterator();
+        while( it.hasNext() ) {
+            if ( isClauseSatisfable((byte[]) it.next()))
+                pocetSplnitelnych++;
+        }
+        return pocetSplnitelnych;
     }
 
     /**

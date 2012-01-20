@@ -8,6 +8,8 @@ public interface IStrategy {
 
     public void solve();
 
-    public byte[] getBestSolution();
+    public boolean[] getBestSolution();
+
+    public int getBestWeight();
 
 }

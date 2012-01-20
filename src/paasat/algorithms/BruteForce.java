@@ -1,7 +1,7 @@
 package paasat.algorithms;
 
 import paasat.Formula;
-import utils.Printer;
+import paasat.utils.Printer;
 
 /**
  * Implementace algoritmu hrubou silou pomoci iterativni metody
@@ -86,8 +86,12 @@ public class BruteForce implements IStrategy {
         this.myFormula = myFormula;
     }
 
-    public byte[] getBestSolution() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public boolean[] getBestSolution() {
+        return this.bestOhodnoceni;
+    }
+
+    public int getBestWeight() {
+        return this.bestVaha;
     }
 
     //== TESTY =================================================================

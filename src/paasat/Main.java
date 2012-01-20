@@ -1,6 +1,6 @@
 package paasat;
 
-import utils.FileLoader;
+import paasat.utils.FileLoader;
 import java.util.List;
 import paasat.algorithms.*;
 
@@ -11,6 +11,17 @@ import paasat.algorithms.*;
 public class Main {
 
     public static IStrategy itsStrategy = null;
+
+    /* pocet opakovani celeho vypoctu */
+    final static int ITERATION_NO = 1;
+    /* pocatecni teplota */
+    final static double INIT_TEMP = 500;
+    /* minimalni teplota */
+    final static double MIN_TEMP = 1;
+    /* zchlazovaci koeficient 0,8 - 0,999 */
+    final static double ZCHLAZOVACI_KOEF = 0.85;
+    /* equilibrum koeficient */
+    final static int EQUILIBRUM_KOEF = 100;
 
     /**
      * @param args the command line arguments
@@ -27,8 +38,13 @@ public class Main {
         Formula formula = new Formula(vstup, vahy, fl.getVariablesCount());
 
         // vytvorime strategii reseni a spustime
-        itsStrategy = new BruteForce(formula);
-        itsStrategy.solve();
+        // itsStrategy = new BruteForce(formula);
+        SimulatedCooling sim = new SimulatedCooling(formula);
+        sim.setPocatecniTeplota(INIT_TEMP);
+        sim.setMinimalniTeplota(MIN_TEMP);
+        sim.setZchlazeniKoef(ZCHLAZOVACI_KOEF);
+        sim.setEquilibrumKoef(EQUILIBRUM_KOEF);
+        sim.solve();
 
     }
 
