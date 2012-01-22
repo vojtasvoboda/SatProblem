@@ -27,6 +27,10 @@ public class FileLoader {
     /* pocet radku */
     public int linesCount = 0;
 
+    public FileLoader(String dir) {
+        DATAPATH = System.getProperty("user.dir") + "\\" + dir + "\\";
+    }
+
     /**
      * Nacte vstupni soubor do pole listu
      * Zkopirovano z http://www.roseindia.net/java/beginners/java-read-file-line-by-line.shtml
@@ -34,7 +38,7 @@ public class FileLoader {
      */
     public List loadFile(String fileName) {
         String fullPath = DATAPATH + fileName;
-        System.out.println("FileLoader: loadFile(): Nacitam soubor: " + fullPath + ", existuje: " + new File(fullPath).exists());
+        // System.out.println("FileLoader: loadFile(): Nacitam soubor: " + fullPath + ", existuje: " + new File(fullPath).exists());
         FileInputStream fstream = null;
         DataInputStream in = null;
         BufferedReader br = null;
@@ -48,7 +52,7 @@ public class FileLoader {
             String strLine = "";
             // Read File Line By Line
             while ((strLine = br.readLine()) != null) {
-                System.out.println("FileLoader: loadFile(): Ctu radek " + strLine);
+                // System.out.println("FileLoader: loadFile(): Ctu radek " + strLine);
                 if ( strLine.startsWith("c") ) continue;
                 if ( strLine.startsWith("%") || (strLine.length() < 1) ) break;
                 if ( strLine.startsWith("p") ) {
@@ -74,8 +78,9 @@ public class FileLoader {
     public byte[] loadWeights(String fileName) {
         String fullPath = DATAPATH + fileName;
         File soubor = new File(fullPath);
+        /*
         System.out.println("FileLoader: loadWeights(): Nacitam soubor: " + fullPath +
-                            ", existuje: " + soubor.exists());
+                            ", existuje: " + soubor.exists()); */
         /* pokud neexistuje, vytvorime */
         if ( !soubor.exists() | !soubor.isFile() ) {
             System.out.println("FileLoader: loadWeights(): Vytvarim soubor s vahama.");
@@ -144,12 +149,12 @@ public class FileLoader {
      * @param line
      */
     private void parseParameters(String line) {
-        System.out.println("FileLoader: parseParameters(): ctu parametry z radku " + line);
+        // System.out.println("FileLoader: parseParameters(): ctu parametry z radku " + line);
         String[] bits = line.split("\\s+");
         this.variablesCount = Integer.parseInt(bits[2].trim());
-        System.out.println("FileLoader: parseParameters(): pocet promennych je " + this.variablesCount);
+        // System.out.println("FileLoader: parseParameters(): pocet promennych je " + this.variablesCount);
         this.linesCount = Integer.parseInt(bits[3].trim());
-        System.out.println("FileLoader: parseParameters(): pocet radku je " + this.linesCount);
+        // System.out.println("FileLoader: parseParameters(): pocet radku je " + this.linesCount);
     }
 
     /**
@@ -188,8 +193,8 @@ public class FileLoader {
      */
     public static void main(String[] args) {
 
-        String file = "small.txt";
-        FileLoader fl = new FileLoader();
+        String file = "small.cnf";
+        FileLoader fl = new FileLoader("data-test");
         List list = fl.loadFile(file);
         byte[] vahy = fl.loadWeights(file + ".sol");
         System.out.println("Vypisuji nactene klauzule: ");

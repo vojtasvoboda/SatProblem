@@ -3,6 +3,8 @@ package paasat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import paasat.utils.Printer;
 
 /**
@@ -23,6 +25,9 @@ public class Formula {
     /* vahy promennych */
     private byte[] vahy = null;
 
+    /* pocet splnitelnych klauzuli */
+    private int pocetSplnitelnychKlauzuli = -1;
+
     /**
      * Konstruktor
      * @param vstup
@@ -35,11 +40,11 @@ public class Formula {
     }
 
     /**
-     * Vrati, jestli je formule resitelna a to tak, ze projde vsechny klauzule
+     * Vrati, jestli je formule resitelna
      * Pokud je jakakoliv klauzule nulova, vrati false
      * @return boolean
      */
-    public boolean isFormulaSatisfable() {
+    public boolean isFormulaSatisfableShort() {
         // System.out.println("Formula: isFormulaSatisfable(): pocet " + klauzule.size());
         Iterator it = klauzule.iterator();
         while( it.hasNext() ) {
@@ -49,17 +54,26 @@ public class Formula {
     }
 
     /**
+     * Vrati, jestli je formule resitelna a to tak, ze projde vsechny klauzule
+     * @return boolean
+     */
+    public boolean isFormulaSatisfable() {
+        if ( this.pocetSplnitelnychKlauzuli < 0 ) System.err.println("Nejdriv je nutno volat getPocetSplnitelnychKlauzuli");
+        return (this.pocetSplnitelnychKlauzuli > 0);
+    }
+
+    /**
      * Vrati pocet splnitelnych klauzuli
      * @return
      */
     public int getPocetSplnitelnychKlauzuli() {
-        int pocetSplnitelnych = 0;
+        this.pocetSplnitelnychKlauzuli = 0;
         Iterator it = klauzule.iterator();
         while( it.hasNext() ) {
             if ( isClauseSatisfable((byte[]) it.next()))
-                pocetSplnitelnych++;
+                this.pocetSplnitelnychKlauzuli++;
         }
-        return pocetSplnitelnych;
+        return this.pocetSplnitelnychKlauzuli;
     }
 
     /**

@@ -1,9 +1,7 @@
 package paasat.utils;
 
-import paasat.utils.FileLoader;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FilenameFilter;
 
 /**
  * Trida pro nacteni cele slozky
@@ -13,36 +11,23 @@ import java.util.List;
  */
 public class DirectoryLoader {
 
-    private FileLoader myFileLoader = null;
-
-    public DirectoryLoader(FileLoader myFileLoader) {
-        this.myFileLoader = myFileLoader;
-    }
-
-    /**
-     * Nacte vsechny soubory ve slozce
-     * @param path
-     * @return
-     */
-    public List[] loadDirectory(String path) {
-        String[] soubory = getDirectoryFiles(path);
-        // List[] vystup = new ArrayList();
-        for (String file: soubory) {
-
-        }
-        return null;
-    }
-
     /**
      * Vrati vsechny soubory ve slozce
      * @param directory
      * @return
      */
     public String[] getDirectoryFiles(String directory) {
-        File slozka = new File(directory);
-        if ( !slozka.isDirectory() ) return null;
-
-        return null;
+        String fullPath = System.getProperty("user.dir") + "\\" + directory + "\\";
+        File slozka = new File(fullPath);
+        if ( !slozka.isDirectory() || !slozka.exists() ) return null;
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                int end = name.length() - 4;
+                return name.substring(end).equals(".cnf");
+            }
+        };
+        String[] list = slozka.list(filter);
+        return list;
     }
 
 }

@@ -10,12 +10,11 @@ import paasat.utils.Printer;
 public class BruteForce implements IStrategy {
 
     private Formula myFormula;
-
     private int bestVaha = 0;
-
     private boolean[] bestOhodnoceni = null;
-
     private static boolean DEBUG = false;
+    private int expandovano = 0;
+    private int splnitelne = 0;
 
     public BruteForce(Formula myFormula) {
         this.myFormula = myFormula;
@@ -35,20 +34,23 @@ public class BruteForce implements IStrategy {
                                         + celkemMoznychStavu);        
         /* prochazime vse, takze iterujeme bitovy vektor */
         int aktualniVaha = 0;
+        expandovano = 0;
+        splnitelne = 0;
         boolean[] ohodnoceni = null;
         for (int i = 0; i < celkemMoznychStavu; i++) {
             /* zjistime si bitovy vektor */
             ohodnoceni = intToBooleanArray(i, celkemPolozek);
-            System.out.print("Prochazime ohodnoceni: ");
-            Printer.printBooleanArray(ohodnoceni);
+            // System.out.print("Prochazime ohodnoceni: "); Printer.printBooleanArray(ohodnoceni);
+            expandovano++;
             /* mrkneme jake je ohodnoceni formule */
             myFormula.setOhodnoceni(ohodnoceni);
             if ( myFormula.isFormulaSatisfable() ) {
-                System.out.println("Klauzule JE splnitelna.");
+                // System.out.println("Klauzule JE splnitelna.");
+                splnitelne++;
                 aktualniVaha = myFormula.getFormulaSum();
-                System.out.println("Soucet vah je " + aktualniVaha);
+                // System.out.println("Soucet vah je " + aktualniVaha);
                 if ( aktualniVaha > this.bestVaha ) {
-                    System.out.println("Nasli jsme lepsi soucet vah: " + aktualniVaha);
+                    // System.out.println("Nasli jsme lepsi soucet vah: " + aktualniVaha);
                     this.bestVaha = aktualniVaha;
                     this.bestOhodnoceni = ohodnoceni;
                 }
@@ -86,12 +88,20 @@ public class BruteForce implements IStrategy {
         this.myFormula = myFormula;
     }
 
-    public boolean[] getBestSolution() {
+    public boolean[] getBestOhodnoceni() {
         return this.bestOhodnoceni;
     }
 
     public int getBestWeight() {
         return this.bestVaha;
+    }
+
+    public int getExpandovano() {
+        return expandovano;
+    }
+
+    public int getSplnitelne() {
+        return splnitelne;
     }
 
     //== TESTY =================================================================

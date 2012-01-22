@@ -8,8 +8,12 @@ public interface IStrategy {
 
     public void solve();
 
-    public boolean[] getBestSolution();
+    public boolean[] getBestOhodnoceni();
 
     public int getBestWeight();
+
+    public int getExpandovano();
+
+    public int getSplnitelne();
 
 }
