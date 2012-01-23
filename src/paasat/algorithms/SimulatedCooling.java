@@ -162,16 +162,17 @@ public class SimulatedCooling implements IStrategy {
         */
 
         // varianta C)
-        if ( splnitelne1 ) pocet1 += 20;
-        if ( splnitelne2 ) pocet2 += 20;
+        /*
+        if ( splnitelne1 ) pocet1 += 50;
+        if ( splnitelne2 ) pocet2 += 50;
         if ( pocet2 > pocet1 ) return true;
         if ( pocet2 < pocet1 ) return false;
         // pokud se rovnaji, jedeme dale
         if ( vaha2 > vaha1 ) return true;
         return false;
+        */
 
         // varianta D)
-        /*
         // pokud je jeden splnitelny a druhy ne, neni co resit
         if ( splnitelne1 & !splnitelne2 ) {
             return false;
@@ -184,7 +185,6 @@ public class SimulatedCooling implements IStrategy {
             if ( pocet2 > pocet1 ) return true;
         }
         return false;
-        */
 
     }
 

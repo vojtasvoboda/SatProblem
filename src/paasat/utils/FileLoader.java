@@ -27,6 +27,9 @@ public class FileLoader {
     /* pocet radku */
     public int linesCount = 0;
 
+    /* maximalni pocet klauzuli */
+    private int maxLinesCount = 1000;
+
     public FileLoader(String dir) {
         DATAPATH = System.getProperty("user.dir") + "\\" + dir + "\\";
     }
@@ -43,6 +46,7 @@ public class FileLoader {
         DataInputStream in = null;
         BufferedReader br = null;
         List vystup = null;
+        int counter = 0;
         try {
             vystup = new ArrayList();
             fstream = new FileInputStream(fullPath);
@@ -59,6 +63,7 @@ public class FileLoader {
                     parseParameters(strLine);
                     continue;
                 }
+                if ( ++counter > maxLinesCount ) break;
                 vystup.add(parseLine(strLine));
             }
             // Close the input stream
@@ -183,6 +188,10 @@ public class FileLoader {
 
     public int getVariablesCount() {
         return variablesCount;
+    }
+
+    public void setMaxLinesCount(int maxLinesCount) {
+        this.maxLinesCount = maxLinesCount;
     }
 
     //== TESTY =================================================================

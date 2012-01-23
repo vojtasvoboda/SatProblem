@@ -37,6 +37,7 @@ public class BruteForce implements IStrategy {
         expandovano = 0;
         splnitelne = 0;
         boolean[] ohodnoceni = null;
+        boolean splnitelna = false;
         for (int i = 0; i < celkemMoznychStavu; i++) {
             /* zjistime si bitovy vektor */
             ohodnoceni = intToBooleanArray(i, celkemPolozek);
@@ -44,7 +45,9 @@ public class BruteForce implements IStrategy {
             expandovano++;
             /* mrkneme jake je ohodnoceni formule */
             myFormula.setOhodnoceni(ohodnoceni);
-            if ( myFormula.isFormulaSatisfable() ) {
+            splnitelna = (myFormula.getPocetSplnitelnychKlauzuli() == myFormula.getClausuleCount());
+
+            if ( splnitelna ) {
                 // System.out.println("Klauzule JE splnitelna.");
                 splnitelne++;
                 aktualniVaha = myFormula.getFormulaSum();
