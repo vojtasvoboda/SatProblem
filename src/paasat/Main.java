@@ -26,9 +26,9 @@ public class Main {
     /* equilibrum koeficient */
     final static int EQUILIBRUM_KOEF = 100; // 100
     /* slozka s daty */
-    final static String DATA_FOLDER = "data-75";
+    final static String DATA_FOLDER = "data";
     /* maximalni pocet klauzuli */
-    final static int MAX_CLAUSULA_COUNT = 80; // pro data (1000), data-50 (80)
+    final static int MAX_CLAUSULA_COUNT = 91; // pro data (91), data-50 (80), data-75 (70)
 
     /**
      * @param args the command line arguments
@@ -48,6 +48,7 @@ public class Main {
         byte[] vahy = null;
         int bestWeight = 0;
         int expandovanoStavu = 0;
+        int expandovanoStavuCelkem = 0;
         int splnitelne = 0;
         int celkemSplnitelnych = 0;
         int pocetSplnitelnych = 0;
@@ -55,11 +56,12 @@ public class Main {
         int soucetVah = 0;
 
         /* jake konfigurace chci prochazet */
-        int[] konfigurace = {1,2,3,4,5,10,20,50,100,200,500,1000,2000,5000,10000,50000,100000,1000000};
-        // int[] konfigurace = {1};
+        // int[] konfigurace = {1,2,3,4,5,10,20,50,100,200,500,1000,2000,5000,10000,50000,100000,1000000};
+        // double[] konfigurace = {0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.92,0.95,0.96,0.97,0.98,0.99,0.995};
+        int[] konfigurace = {1};
 
         for (int x = 0; x < konfigurace.length; x++) {
-            int config = konfigurace[x];
+            double config = konfigurace[x];
 
             /* zapnu mereni casu */
             long startTime = System.currentTimeMillis();
@@ -69,6 +71,7 @@ public class Main {
             soucetVah = 0;
             celkemProchazeno = 0;
             celkemSplnitelnych = 0;
+            expandovanoStavuCelkem = 0;
 
             // projdeme vsechny soubory (formule)
             for (int i = 0; i < files.length & i < ITERATION_MAX; i++) {
@@ -81,8 +84,8 @@ public class Main {
                 // vytvorime strategii reseni a spustime
                 // BruteForce sim = new BruteForce(formula);
                 SimulatedCooling sim = new SimulatedCooling(formula);
-                // sim.setPocatecniTeplota(INIT_TEMP);
-                sim.setPocatecniTeplota(config);
+                // sim.setPocatecniTeplota(config);
+                sim.setPocatecniTeplota(INIT_TEMP);
                 sim.setMinimalniTeplota(MIN_TEMP);
                 sim.setZchlazeniKoef(ZCHLAZOVACI_KOEF);
                 sim.setEquilibrumKoef(EQUILIBRUM_KOEF);
@@ -91,13 +94,15 @@ public class Main {
                 // zjistime nejlepsi reseni
                 bestWeight = sim.getBestWeight();
                 expandovanoStavu = sim.getExpandovano();
+                expandovanoStavuCelkem += expandovanoStavu;
                 splnitelne = sim.getSplnitelne();
                 celkemSplnitelnych += splnitelne;
                 celkemProchazeno++;
                 soucetVah += bestWeight;
                 if ( splnitelne > 0 ) pocetSplnitelnych++;
 
-                // System.out.println("Soubor " + file + ", bestWeight " + bestWeight + ", expandovano " + expandovanoStavu + ", splnitelne " + splnitelne);
+                System.out.println("Soubor " + file + ", bestWeight " + bestWeight + ", expandovano " + expandovanoStavu + ", splnitelne " + splnitelne);
+                // System.out.print(".");
 
             }
 
@@ -105,9 +110,10 @@ public class Main {
             long endTime = System.currentTimeMillis();
             startTime = endTime - startTime;
 
-            System.out.println("# splnitelnych formuli je " + pocetSplnitelnych + " z " +
+            System.out.println(config + ": # spl.form. " + pocetSplnitelnych + "/" +
                     celkemProchazeno + ", soucet vah " + soucetVah + ", cas " +
-                    startTime + "ms, prumerne " + (double) celkemSplnitelnych / 20 + " splnitel, konfigurace " + config);
+                    startTime + "ms, prumerne " + (double) celkemSplnitelnych / 20 + 
+                    " splnitel, exp celkem " + expandovanoStavuCelkem);
         }
     }
 }
